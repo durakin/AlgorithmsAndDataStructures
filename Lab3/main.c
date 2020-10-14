@@ -132,7 +132,7 @@ int main()
     DynArray object;
     object.size = CycleInputInt("Enter size of array", ArraySizeInputChecker);
     object.content = (int*) malloc(object.size * sizeof(int));
-    printf("Enter elements, one by one");
+    printf("Enter elements, one by one\n");
     for (int i = 0; i < object.size; i++)
     {
         object.content[i] = CycleInputInt("Enter next element",
