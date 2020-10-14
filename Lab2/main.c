@@ -48,6 +48,16 @@ int CycleInputInt(char* stringToOutput, bool(* pChecker)(int))
     return number;
 }
 
+bool ArraySizeInputChecker(int arraySize)
+{
+    return arraySize > 0;
+}
+
+bool AnyIntInputChecker(int _)
+{
+    return true;
+}
+
 typedef struct
 {
     int* content;
@@ -78,6 +88,7 @@ double arrayAverage(DynArray* object)
 double arrayMidpoint(DynArray* object)
 {
     double result;
+    result = 0;
     DynArray copy;
     arrayCopy(object, &copy);
     qsort(copy.content, copy.size, sizeof(int),
@@ -94,16 +105,6 @@ double arrayMidpoint(DynArray* object)
     }
     free(copy.content);
     return result;
-}
-
-bool ArraySizeInputChecker(int arraySize)
-{
-    return arraySize > 0;
-}
-
-bool AnyIntInputChecker(int _)
-{
-    return true;
 }
 
 int main()
