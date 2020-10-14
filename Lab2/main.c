@@ -95,13 +95,13 @@ double arrayMidpoint(DynArray* object)
           (int (*)(const void*, const void*)) DefaultComp);
     if (object->size % 2 == 0)
     {
-        result += (object->content[(object->size / 2) - 1] +
-                   object->content[object->size / 2]);
-        result /= 2;
+        result += (copy.content[(object->size / 2) - 1] +
+                   copy.content[object->size / 2]);
+        result/=2;
     }
     else
     {
-        result = object->content[object->size / 2];
+        result = copy.content[object->size / 2];
     }
     free(copy.content);
     return result;
@@ -112,7 +112,7 @@ int main()
     DynArray object;
     object.size = CycleInputInt("Enter size of array", ArraySizeInputChecker);
     object.content = (int*) malloc(object.size * sizeof(int));
-    printf("Enter elements, one by one");
+    printf("Enter elements, one by one\n");
     for (int i = 0; i < object.size; i++)
     {
         object.content[i] = CycleInputInt("Enter next element",
