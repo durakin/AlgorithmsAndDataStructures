@@ -78,7 +78,10 @@ void PrintArray(DynArray* object)
 
 void ArrayCopy(DynArray* origin, DynArray* object)
 {
-    free(object->content);
+    if (object->size != 0)
+    {
+        free(object->content);
+    }
     object->size = origin->size;
     object->content = (int*) malloc(object->size * sizeof(int));
     for (int i = 0; i < object->size; i++)
@@ -87,65 +90,62 @@ void ArrayCopy(DynArray* origin, DynArray* object)
     }
 }
 
-void ShellSort (DynArray* object)
+void ShakerSort(DynArray* object)
 {
-    int h, i, j, tmp;
-
-    // Выбор шага
-    for (h = object->size / 3; h > 0; h /= 2)
-        // Перечисление элементов, которые сортируются на определённом шаге
-        for (i = h; i < object->size; i++)
-            // Перестановка элементов внутри подсписка, пока i-тый не будет отсортирован
-            for (j = i - h; j >= 0 && object->content[j] > object->content[j + h]; j -= h)
-            {
-                SwapInt(&object->content[j], &object->content[j+h]);
-            }
-}
-
-void InsertionSort(DynArray* object)
-{
-    for (int i = 0; i < object->size; i++)
+    int left;
+    left = 0;
+    int right;
+    right = object->size - 1;
+    while(left <= right)
     {
-        int box;
-        box = object->content[i];
-        int j;
-        j = 0;
-        while (object->content[j] < box)
+        for (int i = left; i < right; i++)
         {
-            j++;
+            if(object->content[i] > object->content[i+1])
+            {
+                SwapInt(&object->content[i], &object->content[i+1]);
+            }
         }
-        for (int k = i - 1; k >= j; k--)
+        right--;
+        for (int i = right; i > left; i--)
         {
-            object->content[k + 1] = object->content[k];
+            if(object->content[i-1] > object->content[i])
+            {
+                SwapInt(&object->content[i], &object->content[i-1]);
+            }
         }
-        object->content[j] = box;
+        left++;
     }
 }
 
-void SelectionSort(DynArray* object)
+void ShellSort(DynArray* object)
 {
-    for (int i = 0; i < object->size; i++)
-    {
-        int jBox;
-        jBox = i;
-        int box;
-        box = object->content[i];
-        for (int j = i; j < object->size; j++)
+    for (int h = object->size/3 ? object->size/3 : 1; h > 0; h /= 2)
+        for (int n = 0; n < h; n++)
         {
-            if (object->content[j] < box)
+            for (int i = n + h;
+                 i < object->size; i += h)
             {
-                jBox = j;
-                box = object->content[j];
+                int box;
+                box = object->content[i];
+                int j = n;
+                while (j < i && box > object->content[j])
+                {
+                    j += h;
+                }
+                for (int k = i; k > j; k -= h)
+                {
+                    object->content[k] = object->content[k - h];
+                }
+                object->content[j] = box;
+
             }
         }
-        SwapInt(&(object->content[i]), &(object->content[jBox]));
-    }
 }
 
 int main()
 {
     DynArray object;
-    object.size = CycleInputInt("Enter size of array", ArraySizeInputChecker);
+    object.size = CycleInputInt("Enter size of array",ArraySizeInputChecker);
     object.content = (int*) malloc(object.size * sizeof(int));
     printf("Enter elements, one by one\n");
     for (int i = 0; i < object.size; i++)
@@ -156,14 +156,18 @@ int main()
 
     printf("Origin array:\n");
     PrintArray(&object);
+    DynArray copied;
+
     printf("Shell sorted:\n");
-    ShellSort(&object);
-    PrintArray(&object);
-    /*printf("Selection sorted:\n");
-    ArrayCopy(&object, &coppy);
-    SelectionSort(&coppy);
-    PrintArray(&coppy);
-*/
-    //free(object.content);
-    //free(coppy.content);
+    ArrayCopy(&object, &copied);
+    ShellSort(&copied);
+    PrintArray(&copied);
+
+    printf("Shaker sorted:\n");
+    ArrayCopy(&object, &copied);
+    ShakerSort(&copied);
+    PrintArray(&copied);
+
+    free(object.content);
+    free(copied.content);
 }
