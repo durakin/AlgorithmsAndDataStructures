@@ -1,16 +1,12 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-enum Constants
-{
-    INPUT_SIZE = 100
-};
-
 bool SplitSequence(FILE* origin, FILE* a, FILE* b, int step)
 {
     int i;
     i = 0;
     int current;
+
     while (fscanf(origin, "%d", &current) != EOF)
     {
         if (!((i / step) % 2))
@@ -32,20 +28,19 @@ void MergeSequences(FILE* a, FILE* b, FILE* result, int step)
     switchFile = NULL;
     int tempA;
     int tempB;
-    int temp;
     int next;
+    int aPassed;
+    int bPassed;
     bool aFinish;
     bool bFinish;
     int lastScan;
     aFinish = false;
     bFinish = false;
-    int aPassed;
-    int bPassed;
     aPassed = -1;
     bPassed = -1;
+
     while (!aFinish || !bFinish)
     {
-
         if (!aFinish && switchFile != a)
         {
             lastScan = fscanf(a, "%d", &tempA);
@@ -64,26 +59,23 @@ void MergeSequences(FILE* a, FILE* b, FILE* result, int step)
             }
             bPassed++;
         }
-
-        if(aFinish && bFinish)
+        if (aFinish && bFinish)
         {
             break;
         }
-
-        if(aFinish)
+        if (aFinish)
         {
             fprintf(result, "%d\n", tempB);
             switchFile = NULL;
             continue;
         }
-        if(bFinish)
+        if (bFinish)
         {
             fprintf(result, "%d\n", tempA);
             switchFile = NULL;
             continue;
         }
-
-        if (aPassed/step == bPassed/step)
+        if (aPassed / step == bPassed / step)
         {
             if (tempA > tempB)
             {
@@ -98,7 +90,6 @@ void MergeSequences(FILE* a, FILE* b, FILE* result, int step)
         }
         else
         {
-            next = aPassed > bPassed ? tempB : tempA;
             if (aPassed > bPassed)
             {
                 next = tempB;
@@ -110,15 +101,12 @@ void MergeSequences(FILE* a, FILE* b, FILE* result, int step)
                 switchFile = b;
             }
         }
-
         fprintf(result, "%d\n", next);
     }
 }
 
 int main()
 {
-
-    int a = 0;
     int step = 1;
     bool notSorted;
 
@@ -134,10 +122,10 @@ int main()
         fclose(aFile);
         fclose(bFile);
 
-        aFile = fopen("a.txt" , "r");
+        aFile = fopen("a.txt", "r");
         bFile = fopen("b.txt", "r");
 
-        FILE *destFile = fopen("origin.txt", "w");
+        FILE* destFile = fopen("origin.txt", "w");
 
         MergeSequences(aFile, bFile, destFile, step);
 
@@ -145,9 +133,8 @@ int main()
         fclose(bFile);
         fclose(destFile);
 
-        step*=2;
-        a++;
+        step *= 2;
     }
     while (notSorted);
-    printf("%d", a);
+    return 0;
 }
