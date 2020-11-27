@@ -1,70 +1,13 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
 
 enum Constants
 {
     INPUT_SIZE = 100
 };
 
-
-void SwapInt(int* a, int* b)
-{
-    int box;
-    box = *b;
-    *b = *a;
-    *a = box;
-}
-
-int CycleInputInt(char* stringToOutput, bool(* pChecker)(int))
-{
-    int number;
-    int position;
-    char input[INPUT_SIZE];
-
-    while (true)
-    {
-        printf("%s\n", stringToOutput);
-        fflush(stdout);
-        char* fgetsRet = fgets(input, INPUT_SIZE, stdin);
-        if (fgetsRet == NULL)
-        {
-            printf("Wrong format!\n");
-            continue;
-        }
-        int inputLength = strlen(input) - 1;
-        input[inputLength] = '\0';
-        int sscanfRet = sscanf(input, "%d%n", &number, &position);
-        if (position != inputLength)
-        {
-            printf("Wrong format!\n");
-            continue;
-        }
-        if (pChecker && !pChecker(number))
-        {
-            printf("Wrong format!\n");
-            continue;
-        }
-        if (sscanfRet == 1) break;
-        printf("Wrong format!\n");
-    }
-    return number;
-}
-
-bool ArraySizeInputChecker(int arraySize)
-{
-    return arraySize > 0;
-}
-
-bool AnyIntInputChecker(int _)
-{
-    return true;
-}
-
 bool SplitSequence(FILE* origin, FILE* a, FILE* b, int step)
 {
-    printf("Split started\n");
     int i;
     i = 0;
     int current;
@@ -73,141 +16,103 @@ bool SplitSequence(FILE* origin, FILE* a, FILE* b, int step)
         if (!((i / step) % 2))
         {
             fprintf(a, "%d\n", current);
-            printf("%d\n", current);
         }
         else
         {
             fprintf(b, "%d\n", current);
-            printf("%d\n", current);
         }
         i++;
     }
-    return (i >= step) ? true : false;
+    return i > step;
 }
 
-bool MergeSequences(FILE* a, FILE* b, FILE* result, int step)
+void MergeSequences(FILE* a, FILE* b, FILE* result, int step)
 {
-    printf("Merge started\n");
-    int seriesMerged = 0;
     FILE* switchFile;
-    FILE* contrSwitch;
+    switchFile = NULL;
     int tempA;
     int tempB;
     int temp;
     int next;
     bool aFinish;
     bool bFinish;
-    int aScan;
-    int bScan;
+    int lastScan;
     aFinish = false;
     bFinish = false;
-    while (!aFinish && !bFinish)
+    int aPassed;
+    int bPassed;
+    aPassed = -1;
+    bPassed = -1;
+    while (!aFinish || !bFinish)
     {
 
-        if (!aFinish)
+        if (!aFinish && switchFile != a)
         {
-            aScan = fscanf(a, "%d", &tempA);
-            if (aScan == EOF)
+            lastScan = fscanf(a, "%d", &tempA);
+            if (lastScan == EOF)
             {
                 aFinish = true;
             }
+            aPassed++;
         }
-        if (!bFinish)
+        if (!bFinish && switchFile != b)
         {
-            bScan = fscanf(b, "%d", &tempB);
-            if (bScan == EOF)
+            lastScan = fscanf(b, "%d", &tempB);
+            if (lastScan == EOF)
             {
                 bFinish = true;
             }
+            bPassed++;
         }
 
-
-        if (!aFinish && (tempA > tempB || bFinish))
+        if(aFinish && bFinish)
         {
-            temp = tempB;
-            next = tempA;
-            switchFile = a;
-            contrSwitch = b;
-        }
-        else
-        {
-            temp = tempA;
-            next = tempB;
-            switchFile = b;
-            contrSwitch = a;
+            break;
         }
 
-        if (aFinish && bFinish)
+        if(aFinish)
         {
+            fprintf(result, "%d\n", tempB);
+            switchFile = NULL;
+            continue;
+        }
+        if(bFinish)
+        {
+            fprintf(result, "%d\n", tempA);
+            switchFile = NULL;
             continue;
         }
 
-        int lastScan;
-        fprintf(result, "%d\n", next);
-        printf("%d\n", next);
-
-        for (int j = 1; j < step; j++)
+        if (aPassed/step == bPassed/step)
         {
-            lastScan = fscanf(switchFile, "%d", &next);
-            if (lastScan == EOF)
+            if (tempA > tempB)
             {
-                if (switchFile == a)
-                {
-                    aFinish = true;
-                }
-                else
-                {
-                    bFinish = true;
-                }
-                break;
+                next = tempA;
+                switchFile = b;
             }
             else
             {
-                fprintf(result, "%d\n", next);
-                printf("%d\n", next);
+                next = tempB;
+                switchFile = a;
             }
         }
-
-
-        if (contrSwitch == a && aFinish)
+        else
         {
-            continue;
-        }
-        if (contrSwitch == b && bFinish)
-        {
-            continue;
-        }
-
-        fprintf(result, "%d\n", temp);
-        printf("%d\n", temp);
-
-        for (int j = 1; j < step; j++)
-        {
-            lastScan = fscanf(contrSwitch, "%d", &next);
-            if (lastScan == EOF)
+            next = aPassed > bPassed ? tempB : tempA;
+            if (aPassed > bPassed)
             {
-                if (contrSwitch == a)
-                {
-                    aFinish = true;
-                }
-                else
-                {
-                    bFinish = true;
-                }
-                break;
+                next = tempB;
+                switchFile = a;
             }
-            fprintf(result, "%d\n", next);
-            printf("%d\n", next);
-
+            else
+            {
+                next = tempA;
+                switchFile = b;
+            }
         }
-    }
-    /*while (fscanf(switchFile, "%d", &temp) != EOF)
-    {
-        fprintf(result, "%d\n", temp);
-    }
-*/
-    return true;
 
+        fprintf(result, "%d\n", next);
+    }
 }
 
 int main()
