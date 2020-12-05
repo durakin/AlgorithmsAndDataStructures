@@ -77,7 +77,7 @@ void MergeSequences(FILE* a, FILE* b, FILE* result, int step)
         }
         if (aPassed / step == bPassed / step)
         {
-            if (tempA > tempB)
+            if (tempA < tempB)
             {
                 next = tempA;
                 switchFile = b;
@@ -108,11 +108,19 @@ void MergeSequences(FILE* a, FILE* b, FILE* result, int step)
 int main()
 {
     int step = 1;
+    int intToPrint;
     bool notSorted;
+    FILE* originFile = fopen("origin.txt", "r");
+    printf("Origin set:\n");
+    while (fscanf(originFile, "%d", &intToPrint) != EOF)
+    {
+        printf("%d ", intToPrint);
+    }
+    fclose(originFile);
 
     do
     {
-        FILE* originFile = fopen("origin.txt", "r");
+        originFile = fopen("origin.txt", "r");
         FILE* aFile = fopen("a.txt", "w");
         FILE* bFile = fopen("b.txt", "w");
 
@@ -134,7 +142,13 @@ int main()
         fclose(destFile);
 
         step *= 2;
+    } while (notSorted);
+    printf("\nSorted set:\n");
+    originFile = fopen("origin.txt", "r");
+    while (fscanf(originFile, "%d", &intToPrint) != EOF)
+    {
+        printf("%d ", intToPrint);
     }
-    while (notSorted);
+    fclose(originFile);
     return 0;
 }
