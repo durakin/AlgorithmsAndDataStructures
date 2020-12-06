@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
-namespace Lab6
+namespace Lab7
 {
     class Program
     {
@@ -38,13 +37,20 @@ namespace Lab6
             {
                 string from;
                 string to;
+                double weight = -1;
                 Console.WriteLine($"Edge {i + 1} of {n}. Edge from: ");
                 from = Console.ReadLine();
                 Console.WriteLine($"Edge {i + 1} of {n}. Edge from {from} to: ");
                 to = Console.ReadLine();
+                do
+                {
+                    Console.WriteLine($"Edge from {from} to {to}. Weight: ");
+                    s = Console.ReadLine();
+                } while (!(double.TryParse(s, out weight) && weight >= 0));
+
                 var vertexFrom = graph.VertexByName(from);
                 var vertexTo = graph.VertexByName(to);
-                if (graph.AddEdge(new GraphEdge(vertexFrom, vertexTo)))
+                if (graph.AddEdge(new GraphEdge(vertexFrom, vertexTo, weight)))
                 {
                     Console.WriteLine($"Added edge from {from} to {to}!");
                 }
@@ -55,23 +61,31 @@ namespace Lab6
                 }
             }
 
-            do
+            var floydResult = graph.Floyd();
+            Console.WriteLine("FLOYD RESULTS\n");
+            foreach (var i in graph.Vertices)
             {
-                Console.WriteLine("Name of start vertex of the DFS");
-                s = Console.ReadLine();
-            } while (graph.VertexByName(s) == null);
+                foreach (var j in graph.Vertices)
+                {
+                    Console.WriteLine($"\nRoute from {i.Name} to {j.Name}:");
+                    GraphVertex x = i;
+                    if (floydResult.Item2[(i, j)] == null)
+                    {
+                        Console.WriteLine("No route");
+                        continue;
+                    }
 
-            Console.WriteLine($"Starting DFS from {s}, order of visiting:");
-            var compliance = new Dictionary<GraphVertex, bool>();
+                    do
+                    {
+                        Console.Write($"{x.Name} -> ");
+                        x = floydResult.Item2[(x, j)];
+                    } while (x != j);
 
-            graph.InitDfs(graph.VertexByName(s), x => Console.WriteLine(x.Name), compliance);
-            Console.WriteLine("Following vertices were never visited:");
-            foreach (var i in compliance.Where(x => x.Value == false))
-            {
-                Console.WriteLine(i.Key.Name);
+                    Console.WriteLine($"{j.Name}\nRoute weight: {floydResult.Item1[(i, j)]}");
+                }
             }
 
-            System.Console.ReadLine();
+            Console.ReadLine();
         }
     }
 }
