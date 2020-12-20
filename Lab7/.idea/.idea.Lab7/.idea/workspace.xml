@@ -26,9 +26,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="abbe645f-c451-4fee-a1e8-cf310ba9e275" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Lab7/Lab7.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab6/.idea/.idea.Lab6/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Lab6/.idea/.idea.Lab6/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab6/Lab6/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Lab6/Lab6/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Lab7/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Lab7/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Lab7/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Lab7/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,13 +96,14 @@
       <option name="presentableId" value="Default" />
       <updated>1607254862769</updated>
       <workItem from="1607254867467" duration="14640000" />
+      <workItem from="1607272236985" duration="1347000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -115,27 +115,28 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="916" height="378" key="GridCell.Tab.0.bottom" timestamp="1607270673377">
+    <state width="1877" height="260" key="GridCell.Tab.0.bottom" timestamp="1607273584981">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="916" height="378" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1607270673377" />
-    <state width="916" height="378" key="GridCell.Tab.0.center" timestamp="1607270673377">
+    <state width="1877" height="260" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1607273584981" />
+    <state width="1877" height="260" key="GridCell.Tab.0.center" timestamp="1607273584981">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="916" height="378" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1607270673377" />
-    <state width="916" height="378" key="GridCell.Tab.0.left" timestamp="1607270673377">
+    <state width="1877" height="260" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1607273584981" />
+    <state width="1877" height="260" key="GridCell.Tab.0.left" timestamp="1607273584981">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="916" height="378" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1607270673377" />
-    <state width="916" height="378" key="GridCell.Tab.0.right" timestamp="1607270673377">
+    <state width="1877" height="260" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1607273584981" />
+    <state width="1877" height="260" key="GridCell.Tab.0.right" timestamp="1607273584981">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="916" height="378" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1607270673377" />
+    <state width="1877" height="260" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1607273584981" />
     <state width="916" height="378" key="GridCell.Tab.1.bottom" timestamp="1607270673377">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

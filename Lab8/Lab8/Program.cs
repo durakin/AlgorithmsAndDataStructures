@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
+using System.Drawing;
 
-namespace Lab7
+namespace Lab8
 {
     class Program
     {
@@ -61,25 +61,11 @@ namespace Lab7
                 }
             }
 
-            var floydResult = graph.Floyd();
-            Console.WriteLine("FLOYD RESULTS\n");
-            foreach (var i in graph.Vertices)
-            {
-                foreach (var j in graph.Vertices)
-                {
-                    Console.WriteLine($"\nRoute from {i.Name} to {j.Name}:");
-                    GraphVertex x = i;
-                    if (floydResult.Item2[(i, j)] == null)
-                    {
-                        Console.WriteLine("No route");
-                        continue;
-                    }
-
-                    Console.WriteLine($"Route weight: {floydResult.Item1[(i, j)]}");
-                }
-            }
-
-            Console.ReadLine();
+            Console.WriteLine(graph.ToString());
+            
+            var ostov = graph.PrimsGraph();
+            
+            Console.WriteLine(ostov.ToString());
         }
     }
 }
