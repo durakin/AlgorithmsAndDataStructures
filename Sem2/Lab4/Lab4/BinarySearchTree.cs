@@ -2,16 +2,16 @@
 
 namespace Lab4
 {
-    public class BTree <T> where T : IComparable
+    public class BinarySearchTree<T> where T : IComparable
     {
-        private BTreeNode <T> _root;
+        private BTreeNode<T> _root;
 
         // A utility function to get height of the tree 
         private static int Height(BTreeNode<T> node)
         {
             return node?.Height ?? 0;
         }
-        
+
 
         // A utility function to right 
         // rotate subtree rooted with y 
@@ -63,6 +63,7 @@ namespace Lab4
         {
             _root = Insert(_root, data);
         }
+
         private static BTreeNode<T> Insert(BTreeNode<T> bTreeNode, T data)
         {
             /* 1. Perform the normal BST rotation */
@@ -129,9 +130,41 @@ namespace Lab4
             return current;
         }
 
-        public void Remove(T data)
+        private void Remove(T data)
         {
             _root = DeleteNode(_root, data);
+        }
+
+        public bool Remove(object value)
+        {
+            if (!FindValue(_root, value, out var data)) return false;
+            Remove(data);
+            return true;
+        }
+
+        public bool FindValue(object value, out T found)
+        {
+            if (FindValue(_root, value, out found)) return true;
+            found = default;
+            return false;
+        }
+
+        private bool FindValue(BTreeNode<T> node, object value, out T found)
+        {
+            if (node == null)
+            {
+                found = default;
+                return false;
+            }
+
+            switch (node.Data.CompareTo(value))
+            {
+                case < 0: return FindValue(node.Right, value, out found);
+                case > 0: return FindValue(node.Left, value, out found);
+                default:
+                    found = node.Data;
+                    return true;
+            }
         }
 
         private static BTreeNode<T> DeleteNode(BTreeNode<T> root, T data)
@@ -218,19 +251,54 @@ namespace Lab4
             }
         }
 
-        // A utility function to print preorder traversal of 
-        // the tree. The function also prints height of every 
-        // node 
-        /*void preOrder(BTreeNode bTreeNode)
+        public enum TraverseOrder
         {
-            if (bTreeNode != null)
+            Infix,
+            Prefix,
+            Postfix
+        }
+
+        public void TraverseTree(Action<T> action, TraverseOrder order = TraverseOrder.Prefix)
+        {
+            switch (order)
             {
-                Console.Write(bTreeNode.Key + " ");
-                preOrder(bTreeNode.Left);
-                preOrder(bTreeNode.Right);
+                case TraverseOrder.Infix:
+                    InfixTraverse(_root, action);
+                    break;
+                case TraverseOrder.Prefix:
+                    PrefixTraverse(_root, action);
+                    break;
+                case TraverseOrder.Postfix:
+                    PostfixTraverse(_root, action);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(order), order, null);
             }
         }
-        */
+
+        private static void InfixTraverse(BTreeNode<T> node, Action<T> action)
+        {
+            if (node == null) return;
+            if (node.Left != null) InfixTraverse(node.Left, action);
+            action(node.Data);
+            if (node.Right != null) InfixTraverse(node.Right, action);
+        }
+
+        private static void PrefixTraverse(BTreeNode<T> node, Action<T> action)
+        {
+            if (node == null) return;
+            action(node.Data);
+            if (node.Left != null) PrefixTraverse(node.Left, action);
+            if (node.Right != null) PrefixTraverse(node.Right, action);
+        }
+
+        private static void PostfixTraverse(BTreeNode<T> node, Action<T> action)
+        {
+            if (node == null) return;
+            if (node.Left != null) PostfixTraverse(node.Left, action);
+            if (node.Right != null) PostfixTraverse(node.Right, action);
+            action(node.Data);
+        }
 
         public void PrintTree()
         {

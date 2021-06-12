@@ -6,55 +6,61 @@ namespace Lab4
     {
         static void Main(string[] args)
         {
-            BTree<int> bTree = new();
- 
-            bTree.Insert(9); 
-            bTree.Insert(5); 
-            bTree.Insert(10); 
-            bTree.Insert(0); 
-            bTree.Insert(6); 
-            bTree.Insert(11); 
-            bTree.Insert(-1); 
-            bTree.Insert(1); 
-            bTree.Insert(2); 
- 
-            //var node = bTree.Find(5);
-            //Console.WriteLine($"Found {node.Data}");
-            //var depth = bTree.GetTreeDepth();
-            //Console.WriteLine($"Tree's depth {depth}");
-            //Console.WriteLine("PreOrder Traversal:");
-            //bTree.PrefixTraverse(bTree.Head, Console.WriteLine);
-            //Console.WriteLine();
- //
-            //Console.WriteLine("InOrder Traversal:");
-            //bTree.InfixTraverse(bTree.Head, Console.WriteLine);
-            //Console.WriteLine();
- //
-            //Console.WriteLine("PostOrder Traversal:");
-            //bTree.PostfixTraverse(bTree.Head, Console.WriteLine);
-            //Console.WriteLine();
+            BinarySearchTree<int> binarySearchTree = new();
             
-            bTree.PrintTree();
- 
-           bTree.Remove(14);
-           bTree.Remove(1);
-           bTree.Remove(2);
-           bTree.Remove(10);
-           bTree.Remove(5);
-           bTree.Remove(11);
-           bTree.Remove(0);
-           bTree.Remove(6);
-           bTree.Remove(-1);
-           bTree.Remove(-10);
-           bTree.Remove(9);
+            binarySearchTree.Insert(10);
+            binarySearchTree.Insert(5);
+            binarySearchTree.Insert(0);
+            binarySearchTree.Insert(6);
+            binarySearchTree.Insert(18);
+            binarySearchTree.Insert(3);
+            binarySearchTree.Insert(4);
+            binarySearchTree.Insert(9);
+            binarySearchTree.Insert(11);
+            binarySearchTree.Insert(-1);
+            binarySearchTree.Insert(1);
+            binarySearchTree.Insert(2);
 
-            //bTree.Remove(5);
- 
-            //Console.WriteLine("PreOrder Traversal After Removing Operation:");
-            //bTree.PrefixTraverse(bTree.Head, Console.WriteLine);
-            Console.WriteLine();
+            binarySearchTree.PrintTree();
+
+            Console.WriteLine("Infix traverse order:");
+            binarySearchTree.TraverseTree(x => Console.Write($"{x} "), BinarySearchTree<int>.TraverseOrder.Infix);
+            Console.WriteLine("\nPostfix traverse order:");
+            binarySearchTree.TraverseTree(x => Console.Write($"{x} "), BinarySearchTree<int>.TraverseOrder.Postfix);
+            Console.WriteLine("\nPrefix traverse order:");
+            binarySearchTree.TraverseTree(x => Console.Write($"{x} "));
+            Console.WriteLine("\nRemoving elements (true/false = found value in list");
+
+            Console.WriteLine($"Removing {5} {binarySearchTree.Remove(5)}");
+            Console.WriteLine($"Removing {14} {binarySearchTree.Remove(14)}");
+            Console.WriteLine($"Removing {1} {binarySearchTree.Remove(1)}");
+            Console.WriteLine($"Removing {2} {binarySearchTree.Remove(2)}");
+            Console.WriteLine($"Removing {0} {binarySearchTree.Remove(0)}");
+            Console.WriteLine($"Removing {-1} {binarySearchTree.Remove(-1)}");
+            Console.WriteLine($"Removing {-10} {binarySearchTree.Remove(-10)}");
+            Console.WriteLine($"Removing {9} {binarySearchTree.Remove(9)}");
+            Console.WriteLine("After removing");
+
+            binarySearchTree.PrintTree();
+
+            var laundry = new Laundry();
+            laundry.AddOrder("Vasiliy", "Suit");
+            laundry.AddOrder("Ivan", "Black shirt");
+            laundry.AddOrder("Rodion", "Jeans");
+            laundry.AddOrder("Jhon", "Leather bag");
+            laundry.AddOrder("Pyotr", "White shirt");
+            laundry.AddOrder("Bojack", "Coat");
+            laundry.AddOrder("Sergey", "Sneakers");
+            Console.WriteLine("List as tree");
+            laundry.PrintAsTree();
             
-            bTree.PrintTree();
+            Console.WriteLine($"Found by name Bojack {laundry.OrderToStringByName("Bojack")}");
+            Console.WriteLine("Delete Vasiliy");
+            laundry.DeleteOrderByName("Vasiliy");
+            Console.WriteLine("List as tree");
+            laundry.PrintAsTree();
+            Console.WriteLine("List as raw list");
+            laundry.PrintAllOrders();
         }
     }
 }
