@@ -6,47 +6,49 @@ namespace Lab4
     {
         static void Main(string[] args)
         {
-            BinaryTree<int> binaryTree = new();
+            BTree<int> bTree = new();
  
-            binaryTree.Add(1);
-            binaryTree.Add(2);
-            binaryTree.Add(7);
-            binaryTree.Add(3);
-            binaryTree.Add(10);
-            binaryTree.Add(5);
-            binaryTree.Add(8);
-            binaryTree.Add(6);
-            binaryTree.Add(14);
-            binaryTree.Add(4);
-            binaryTree.Add(9);
-            binaryTree.Add(14);
+            bTree.Add(1);
+            bTree.Add(2);
+            bTree.Add(7);
+            bTree.Add(3);
+            bTree.Add(10);
+            bTree.Add(5);
+            bTree.Add(8);
+            bTree.Add(6);
+            bTree.Add(4);
+            bTree.Add(9);
+            bTree.Add(14);
  
-            var node = binaryTree.Find(5);
-            Console.WriteLine($"Found {node.Data}");
-            var depth = binaryTree.GetTreeDepth();
-            Console.WriteLine($"Tree's depth {depth}");
+            //var node = bTree.Find(5);
+            //Console.WriteLine($"Found {node.Data}");
+            //var depth = bTree.GetTreeDepth();
+            //Console.WriteLine($"Tree's depth {depth}");
             Console.WriteLine("PreOrder Traversal:");
-            binaryTree.PrefixTraverse(binaryTree.Root, Console.WriteLine);
+            bTree.PrefixTraverse(bTree.Head, Console.WriteLine);
             Console.WriteLine();
  
             Console.WriteLine("InOrder Traversal:");
-            binaryTree.InfixTraverse(binaryTree.Root, Console.WriteLine);
+            bTree.InfixTraverse(bTree.Head, Console.WriteLine);
             Console.WriteLine();
  
             Console.WriteLine("PostOrder Traversal:");
-            binaryTree.PostfixTraverse(binaryTree.Root, Console.WriteLine);
+            bTree.PostfixTraverse(bTree.Head, Console.WriteLine);
             Console.WriteLine();
             
-            binaryTree.PrintTree();
+            bTree.PrintTree();
  
-            binaryTree.Remove(7);
-            binaryTree.Remove(8);
+           bTree.Remove(14);
+           bTree.Remove(1);
+           bTree.Remove(2);
+           bTree.Remove(10);
+            //bTree.Remove(5);
  
             Console.WriteLine("PreOrder Traversal After Removing Operation:");
-            binaryTree.PrefixTraverse(binaryTree.Root, Console.WriteLine);
+            bTree.PrefixTraverse(bTree.Head, Console.WriteLine);
             Console.WriteLine();
             
-            binaryTree.PrintTree();
+            bTree.PrintTree();
         }
     }
 }

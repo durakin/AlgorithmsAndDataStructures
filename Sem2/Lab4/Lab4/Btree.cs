@@ -2,156 +2,329 @@
 
 namespace Lab4
 {
-    class BinaryTree<T> where T : IComparable
+    public class BTree<T> where T : IComparable
     {
-        public BtreeNode<T> Root { get; private set; }
+        public BTreeNode<T> Head { get; internal set; }
 
-        public bool Add(T value)
+
+        public void Add(T input)
         {
-            BtreeNode<T> before = null, after = Root;
+            AddTo(input, Head);
+        }
 
-            while (after != null)
+        private void AddTo(T input, BTreeNode<T> current)
+        {
+            if (Head == null)
             {
-                before = after;
-                switch (value.CompareTo(after.Data))
+                Head = new BTreeNode<T>(input, null, this);
+                return;
+            }
+
+            if (input.CompareTo(current.Data) < 0)
+            {
+                if (current.Left == null)
                 {
-                    //Is new node in left tree? 
-                    case < 0:
-                        after = after.LeftNode;
-                        break;
-                    //Is new node in right tree?
-                    case > 0:
-                        after = after.RightNode;
-                        break;
-                    default:
-                        //Exist same value
-                        return false;
+                    current.Left = new BTreeNode<T>(input, current, this);
+                }
+                else
+                {
+                    AddTo(input, current.Left);
+                }
+            }
+            else
+            {
+                if (current.Right == null)
+                {
+                    current.Right = new BTreeNode<T>(input, current, this);
+                }
+                else
+                {
+                    AddTo(input, current.Right);
                 }
             }
 
-            var newNode = new BtreeNode<T>(value);
-
-            if (Root == null) //Tree ise empty
-                Root = newNode;
-            else
+            var parent = current;
+            while (parent != null)
             {
-                if (before != null && value.CompareTo(before.Data) < 0)
-                    before.LeftNode = newNode;
-                else if (before != null) before.RightNode = newNode;
+                if (parent.State != TreeState.Balanced)
+                {
+                    parent.Balance();
+                }
+
+                parent = parent.Parent; //keep going up
+            }
+        }
+        
+        private T MinValue(BTreeNode<T> node)
+        {
+            var minValue = node.Data;
+
+            while (node.Left != null)
+            {
+                minValue = node.Left.Data;
+                node = node.Left;
             }
 
-            return true;
+            return minValue;
         }
 
-        public BtreeNode<T> Find(T value)
-        {
-            return Find(value, Root);
-        }
 
+       // public bool Remove(T input)
+       // {
+       //     var current = FindWithParent(input, out var parent);
+//
+       //     var removeSuccessful = RemoveNode(current, input);
+//
+       //     if (removeSuccessful == null) return true;
+//
+       //     while (parent != null)
+       //     {
+       //         if (parent.State != TreeState.Balanced)
+       //         {
+       //             parent.Balance();
+       //         }
+//
+       //         parent = parent.Parent; //keep going up
+       //     }
+//
+       //     return true;
+       // }
+
+        
         public void Remove(T value)
         {
-            Root = Remove(Root, value);
+            Head = Remove(Head, value);
         }
 
-        private BtreeNode<T> Remove(BtreeNode<T> parent, T key)
+        private BTreeNode<T> Remove(BTreeNode<T> parent, T key)
         {
             if (parent == null) return null;
 
             switch (key.CompareTo(parent.Data))
             {
                 case < 0:
-                    parent.LeftNode = Remove(parent.LeftNode, key);
+                    parent.Left = Remove(parent.Right, key);
                     break;
                 case > 0:
-                    parent.RightNode = Remove(parent.RightNode, key);
+                    parent.Right= Remove(parent.Left, key);
                     break;
                 // if value is same as parent's value, then this is the node to be deleted  
                 default:
                 {
                     // node with only one child or no child  
-                    if (parent.LeftNode == null)
-                        return parent.RightNode;
-                    if (parent.RightNode == null)
-                        return parent.LeftNode;
+                    if (parent.Left == null)
+                        return parent.Right;
+                    if (parent.Right == null)
+                        return parent.Left;
 
                     // node with two children: Get the inorder successor (smallest in the right subtree)  
-                    parent.Data = MinValue(parent.RightNode);
+                    parent.Data = MinValue(parent.Right);
 
                     // Delete the inorder successor  
-                    parent.RightNode = Remove(parent.RightNode, parent.Data);
+                    parent.Right = Remove(parent.Right, parent.Data);
                     break;
                 }
             }
 
             return parent;
         }
+        
+        //public BTreeNode<T> RemoveNode(BTreeNode<T> current, T key)
+        //{
+            
+            
+            //// STEP 1: PERFORM STANDARD BST DELETE  
+            //if (current == null)
+            //    return null;
+//
+            //// If the key to be deleted is smaller  
+            //// than the Head's key, then it lies 
+            //// in left subtree  
+            //if (key.CompareTo(current.Data) < 0)
+            //    RemoveNode(current.Left, key);
+//
+            //// If the key to be deleted is greater  
+            //// than the Head's key, then it lies  
+            //// in right subtree  
+            //else if (key.CompareTo(current.Data) > 0)
+            //    RemoveNode(current.Right, key);
+//
+            //// if key is same as Head's key, then  
+            //// This is the node to be deleted  
+            //else
+            //{
+            //    // node with only one child or no child  
+            //    if ((current.Left == null) ||
+            //        (current.Right == null))
+            //    {
+            //        var temp = current.Left ?? current.Right;
+//
+            //        // No child case  
+            //        if (temp == null)
+            //        {
+            //            if (current.Parent.Left == current)
+            //            {
+            //                current.Parent.Left = null;
+            //                current = null;
+            //            }
+//
+            //            if (current != null && current.Parent.Right == current)
+            //            {
+            //                current.Parent.Right = null;
+            //                current = null;
+            //            }
+            //        }
+            //        else // One child case  
+            //            current = temp; // Copy the contents of  
+//
+            //        // the non-empty child  
+            //    }
+            //    else
+            //    {
+            //        // node with two children: Get the inorder  
+            //        // successor (smallest in the right subtree)  
+            //        var temp = MinValue(current.Right);
+//
+            //        // Copy the inorder successor's  
+            //        // data to this node  
+            //        current.Data = temp;
+//
+            //        // Delete the inorder successor  
+            //        current.Right = RemoveNode(current.Right,
+            //            temp);
+            //    }
+            //}
+//
+            //// If the tree had only one node 
+            //// then return  
+            //if (current == null)
+            //    return null;
+//
+            //// STEP 2: UPDATE HEIGHT OF THE CURRENT NODE  
+//
+//
+            //// STEP 3: GET THE BALANCE FACTOR OF  
+            //// THIS NODE (to check whether this  
+            //// node became unbalanced)  
+            //int balance = current.BalanceFactor;
+//
+            //// If this node becomes unbalanced,  
+            //// then there are 4 cases  
+//
+            //// Left Left Case  
+            //if (balance > 1 &&
+            //    current.Left.BalanceFactor >= 0)
+            //{
+            //    current.RightRotation();
+            //    return current;
+            //}
+//
+            //// Left Right Case  
+            //if (balance > 1 &&
+            //    current.Left.BalanceFactor < 0)
+            //{
+            //    current.RightLeftRotation();
+            //    return current;
+            //}
+//
+            //// Right Right Case  
+            //if (balance < -1 &&
+            //    current.Right.BalanceFactor <= 0)
+            //{
+            //    current.LeftRotation();
+            //    return current;
+            //}
+//
+            //// Right Left Case  
+            //if (balance < -1 &&
+            //    current.Right.BalanceFactor > 0)
+            //{
+            //    current.LeftRightRotation();
+            //    return current;
+            //}
+//
+            //return current;
+        //}
 
-        private T MinValue(BtreeNode<T> node)
+
+        public bool Search(T input)
         {
-            var minValue = node.Data;
+            return SearchNode(input, Head);
+        }
 
-            while (node.LeftNode != null)
+        private bool SearchNode(T input, BTreeNode<T> current)
+        {
+            if (current == null)
             {
-                minValue = node.LeftNode.Data;
-                node = node.LeftNode;
+                return false;
             }
 
-            return minValue;
-        }
-
-        private BtreeNode<T> Find(T value, BtreeNode<T> parent)
-        {
-            if (parent == null) return null;
-            return value.CompareTo(parent.Data) switch
+            if (input.CompareTo(current.Data) == 0)
             {
-                < 0 => Find(value, parent.LeftNode),
-                > 0 => Find(value, parent.RightNode),
-                0 => parent
-            };
+                return true;
+            }
+
+            return SearchNode(input,
+                input.CompareTo(current.Data) < 0
+                    ? current.Left
+                    : current.Right);
         }
 
-        public int GetTreeDepth()
+        private BTreeNode<T> FindWithParent(T input, out BTreeNode<T> parent)
         {
-            return GetTreeDepth(Root);
+            var current = Head;
+            parent = null;
+
+            while (current != null)
+            {
+                var compare = current.Data.CompareTo(input);
+
+                switch (compare)
+                {
+                    case > 0:
+                        parent = current;
+                        current = current.Left;
+                        break;
+                    case < 0:
+                        parent = current;
+                        current = current.Right;
+                        break;
+                    default:
+                        return current;
+                }
+            }
+
+            return null;
         }
 
-        private int GetTreeDepth(BtreeNode<T> parent)
+
+        public void PrefixTraverse(BTreeNode<T> node, Action<BTreeNode<T>> action)
         {
-            return parent == null ? 0 : Math.Max(GetTreeDepth(parent.LeftNode), GetTreeDepth(parent.RightNode)) + 1;
+            if (node == null) return;
+            action(node);
+            PrefixTraverse(node.Left, action);
+            PrefixTraverse(node.Right, action);
         }
 
-        public void PrefixTraverse(BtreeNode<T> parent, Action<BtreeNode<T>> action)
+        public void InfixTraverse(BTreeNode<T> node, Action<BTreeNode<T>> action)
         {
-            if (parent == null) return;
-            action(parent);
-            PrefixTraverse(parent.LeftNode, action);
-            PrefixTraverse(parent.RightNode, action);
+            if (node == null) return;
+            InfixTraverse(node.Left, action);
+            action(node);
+            InfixTraverse(node.Right, action);
         }
 
-        public void InfixTraverse(BtreeNode<T> parent, Action<BtreeNode<T>> action)
+        public void PostfixTraverse(BTreeNode<T> node, Action<BTreeNode<T>> action)
         {
-            if (parent == null) return;
-            InfixTraverse(parent.LeftNode, action);
-            action(parent);
-            InfixTraverse(parent.RightNode, action);
-        }
-
-        public void PostfixTraverse(BtreeNode<T> parent, Action<BtreeNode<T>> action)
-        {
-            if (parent == null) return;
-            PostfixTraverse(parent.LeftNode, action);
-            PostfixTraverse(parent.RightNode, action);
-            action(parent);
-        }
-
-        public void BalanceTree()
-        {
-            
+            if (node == null) return;
+            PostfixTraverse(node.Left, action);
+            PostfixTraverse(node.Right, action);
+            action(node);
         }
 
         public void PrintTree()
         {
-            TreeDrawer<T>.PrintNode(Root, "");
+            TreeDrawer<T>.PrintNode(Head, "");
         }
     }
 }
