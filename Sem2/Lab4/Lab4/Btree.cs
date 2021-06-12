@@ -2,329 +2,248 @@
 
 namespace Lab4
 {
-    public class BTree<T> where T : IComparable
+    public class BTree
     {
-        public BTreeNode<T> Head { get; internal set; }
+        Node root;
 
-
-        public void Add(T input)
+        // A utility function to get height of the tree 
+        int height(Node N)
         {
-            AddTo(input, Head);
+            if (N == null)
+                return 0;
+            return N.Height;
+        }
+        
+
+        // A utility function to right 
+        // rotate subtree rooted with y 
+        // See the diagram given above. 
+        Node rightRotate(Node y)
+        {
+            Node x = y.Left;
+            Node T2 = x.Right;
+
+            // Perform rotation 
+            x.Right = y;
+            y.Left = T2;
+
+            // Update heights 
+            y.Height = Math.Max(height(y.Left), height(y.Right)) + 1;
+            x.Height = Math.Max(height(x.Left), height(x.Right)) + 1;
+
+            // Return new root 
+            return x;
         }
 
-        private void AddTo(T input, BTreeNode<T> current)
+        // A utility function to left 
+        // rotate subtree rooted with x 
+        // See the diagram given above. 
+        Node leftRotate(Node x)
         {
-            if (Head == null)
+            Node y = x.Right;
+            Node T2 = y.Left;
+
+            // Perform rotation 
+            y.Left = x;
+            x.Right = T2;
+
+            // Update heights 
+            x.Height = Math.Max(height(x.Left), height(x.Right)) + 1;
+            y.Height = Math.Max(height(y.Left), height(y.Right)) + 1;
+
+            // Return new root 
+            return y;
+        }
+
+        // Get Balance factor of node N 
+        int getBalance(Node N)
+        {
+            if (N == null)
+                return 0;
+            return height(N.Left) - height(N.Right);
+        }
+
+        public void Insert(int key)
+        {
+            root = insert(root, key);
+        }
+        private Node insert(Node node, int key)
+        {
+            /* 1. Perform the normal BST rotation */
+            if (node == null)
+                return (new Node(key));
+
+            if (key < node.Key)
+                node.Left = insert(node.Left, key);
+            else if (key > node.Key)
+                node.Right = insert(node.Right, key);
+            else // Equal keys not allowed 
+                return node;
+
+            /* 2. Update height of this ancestor node */
+            node.Height = 1 + Math.Max(height(node.Left),
+                height(node.Right));
+
+            /* 3. Get the balance factor of this ancestor 
+            node to check whether this node became 
+            Wunbalanced */
+            int balance = getBalance(node);
+
+            // If this node becomes unbalanced, then 
+            // there are 4 cases Left Left Case 
+            if (balance > 1 && key < node.Left.Key)
+                return rightRotate(node);
+
+            // Right Right Case 
+            if (balance < -1 && key > node.Right.Key)
+                return leftRotate(node);
+
+            // Left Right Case 
+            if (balance > 1 && key > node.Left.Key)
             {
-                Head = new BTreeNode<T>(input, null, this);
-                return;
+                node.Left = leftRotate(node.Left);
+                return rightRotate(node);
             }
 
-            if (input.CompareTo(current.Data) < 0)
+            // Right Left Case 
+            if (balance < -1 && key < node.Right.Key)
             {
-                if (current.Left == null)
-                {
-                    current.Left = new BTreeNode<T>(input, current, this);
-                }
-                else
-                {
-                    AddTo(input, current.Left);
-                }
+                node.Right = rightRotate(node.Right);
+                return leftRotate(node);
             }
+
+            /* return the (unchanged) node pointer */
+            return node;
+        }
+
+        /* Given a non-empty binary search tree, return the 
+        node with minimum key value found in that tree. 
+        Note that the entire tree does not need to be 
+        searched. */
+        Node minValueNode(Node node)
+        {
+            Node current = node;
+
+            /* loop down to find the leftmost leaf */
+            while (current.Left != null)
+                current = current.Left;
+
+            return current;
+        }
+
+        public void Remove(int key)
+        {
+            root = deleteNode(root, key);
+        }
+        Node deleteNode(Node root, int key)
+        {
+            // STEP 1: PERFORM STANDARD BST DELETE 
+            if (root == null)
+                return root;
+
+            // If the key to be deleted is smaller than 
+            // the root's key, then it lies in left subtree 
+            if (key < root.Key)
+                root.Left = deleteNode(root.Left, key);
+
+            // If the key to be deleted is greater than the 
+            // root's key, then it lies in right subtree 
+            else if (key > root.Key)
+                root.Right = deleteNode(root.Right, key);
+
+            // if key is same as root's key, then this is the node 
+            // to be deleted 
             else
             {
-                if (current.Right == null)
+                // node with only one child or no child 
+                if ((root.Left == null) || (root.Right == null))
                 {
-                    current.Right = new BTreeNode<T>(input, current, this);
+                    Node temp = null;
+                    if (temp == root.Left)
+                        temp = root.Right;
+                    else
+                        temp = root.Left;
+
+                    // No child case 
+                    if (temp == null)
+                    {
+                        temp = root;
+                        root = null;
+                    }
+                    else // One child case 
+                        root = temp; // Copy the contents of 
+                    // the non-empty child 
                 }
                 else
                 {
-                    AddTo(input, current.Right);
+                    // node with two children: Get the inorder 
+                    // successor (smallest in the right subtree) 
+                    Node temp = minValueNode(root.Right);
+
+                    // Copy the inorder successor's data to this node 
+                    root.Key = temp.Key;
+
+                    // Delete the inorder successor 
+                    root.Right = deleteNode(root.Right, temp.Key);
                 }
             }
 
-            var parent = current;
-            while (parent != null)
+            // If the tree had only one node then return 
+            if (root == null)
+                return root;
+
+            // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE 
+            root.Height = Math.Max(height(root.Left),
+                height(root.Right)) + 1;
+
+            // STEP 3: GET THE BALANCE FACTOR
+            // OF THIS NODE (to check whether 
+            // this node became unbalanced) 
+            int balance = getBalance(root);
+
+            // If this node becomes unbalanced, 
+            // then there are 4 cases 
+            // Left Left Case 
+            if (balance > 1 && getBalance(root.Left) >= 0)
+                return rightRotate(root);
+
+            // Left Right Case 
+            if (balance > 1 && getBalance(root.Left) < 0)
             {
-                if (parent.State != TreeState.Balanced)
-                {
-                    parent.Balance();
-                }
-
-                parent = parent.Parent; //keep going up
-            }
-        }
-        
-        private T MinValue(BTreeNode<T> node)
-        {
-            var minValue = node.Data;
-
-            while (node.Left != null)
-            {
-                minValue = node.Left.Data;
-                node = node.Left;
-            }
-
-            return minValue;
-        }
-
-
-       // public bool Remove(T input)
-       // {
-       //     var current = FindWithParent(input, out var parent);
-//
-       //     var removeSuccessful = RemoveNode(current, input);
-//
-       //     if (removeSuccessful == null) return true;
-//
-       //     while (parent != null)
-       //     {
-       //         if (parent.State != TreeState.Balanced)
-       //         {
-       //             parent.Balance();
-       //         }
-//
-       //         parent = parent.Parent; //keep going up
-       //     }
-//
-       //     return true;
-       // }
-
-        
-        public void Remove(T value)
-        {
-            Head = Remove(Head, value);
-        }
-
-        private BTreeNode<T> Remove(BTreeNode<T> parent, T key)
-        {
-            if (parent == null) return null;
-
-            switch (key.CompareTo(parent.Data))
-            {
-                case < 0:
-                    parent.Left = Remove(parent.Right, key);
-                    break;
-                case > 0:
-                    parent.Right= Remove(parent.Left, key);
-                    break;
-                // if value is same as parent's value, then this is the node to be deleted  
-                default:
-                {
-                    // node with only one child or no child  
-                    if (parent.Left == null)
-                        return parent.Right;
-                    if (parent.Right == null)
-                        return parent.Left;
-
-                    // node with two children: Get the inorder successor (smallest in the right subtree)  
-                    parent.Data = MinValue(parent.Right);
-
-                    // Delete the inorder successor  
-                    parent.Right = Remove(parent.Right, parent.Data);
-                    break;
-                }
+                root.Left = leftRotate(root.Left);
+                return rightRotate(root);
             }
 
-            return parent;
-        }
-        
-        //public BTreeNode<T> RemoveNode(BTreeNode<T> current, T key)
-        //{
-            
-            
-            //// STEP 1: PERFORM STANDARD BST DELETE  
-            //if (current == null)
-            //    return null;
-//
-            //// If the key to be deleted is smaller  
-            //// than the Head's key, then it lies 
-            //// in left subtree  
-            //if (key.CompareTo(current.Data) < 0)
-            //    RemoveNode(current.Left, key);
-//
-            //// If the key to be deleted is greater  
-            //// than the Head's key, then it lies  
-            //// in right subtree  
-            //else if (key.CompareTo(current.Data) > 0)
-            //    RemoveNode(current.Right, key);
-//
-            //// if key is same as Head's key, then  
-            //// This is the node to be deleted  
-            //else
-            //{
-            //    // node with only one child or no child  
-            //    if ((current.Left == null) ||
-            //        (current.Right == null))
-            //    {
-            //        var temp = current.Left ?? current.Right;
-//
-            //        // No child case  
-            //        if (temp == null)
-            //        {
-            //            if (current.Parent.Left == current)
-            //            {
-            //                current.Parent.Left = null;
-            //                current = null;
-            //            }
-//
-            //            if (current != null && current.Parent.Right == current)
-            //            {
-            //                current.Parent.Right = null;
-            //                current = null;
-            //            }
-            //        }
-            //        else // One child case  
-            //            current = temp; // Copy the contents of  
-//
-            //        // the non-empty child  
-            //    }
-            //    else
-            //    {
-            //        // node with two children: Get the inorder  
-            //        // successor (smallest in the right subtree)  
-            //        var temp = MinValue(current.Right);
-//
-            //        // Copy the inorder successor's  
-            //        // data to this node  
-            //        current.Data = temp;
-//
-            //        // Delete the inorder successor  
-            //        current.Right = RemoveNode(current.Right,
-            //            temp);
-            //    }
-            //}
-//
-            //// If the tree had only one node 
-            //// then return  
-            //if (current == null)
-            //    return null;
-//
-            //// STEP 2: UPDATE HEIGHT OF THE CURRENT NODE  
-//
-//
-            //// STEP 3: GET THE BALANCE FACTOR OF  
-            //// THIS NODE (to check whether this  
-            //// node became unbalanced)  
-            //int balance = current.BalanceFactor;
-//
-            //// If this node becomes unbalanced,  
-            //// then there are 4 cases  
-//
-            //// Left Left Case  
-            //if (balance > 1 &&
-            //    current.Left.BalanceFactor >= 0)
-            //{
-            //    current.RightRotation();
-            //    return current;
-            //}
-//
-            //// Left Right Case  
-            //if (balance > 1 &&
-            //    current.Left.BalanceFactor < 0)
-            //{
-            //    current.RightLeftRotation();
-            //    return current;
-            //}
-//
-            //// Right Right Case  
-            //if (balance < -1 &&
-            //    current.Right.BalanceFactor <= 0)
-            //{
-            //    current.LeftRotation();
-            //    return current;
-            //}
-//
-            //// Right Left Case  
-            //if (balance < -1 &&
-            //    current.Right.BalanceFactor > 0)
-            //{
-            //    current.LeftRightRotation();
-            //    return current;
-            //}
-//
-            //return current;
-        //}
+            // Right Right Case 
+            if (balance < -1 && getBalance(root.Right) <= 0)
+                return leftRotate(root);
 
-
-        public bool Search(T input)
-        {
-            return SearchNode(input, Head);
-        }
-
-        private bool SearchNode(T input, BTreeNode<T> current)
-        {
-            if (current == null)
+            // Right Left Case 
+            if (balance < -1 && getBalance(root.Right) > 0)
             {
-                return false;
+                root.Right = rightRotate(root.Right);
+                return leftRotate(root);
             }
 
-            if (input.CompareTo(current.Data) == 0)
+            return root;
+        }
+
+        // A utility function to print preorder traversal of 
+        // the tree. The function also prints height of every 
+        // node 
+        void preOrder(Node node)
+        {
+            if (node != null)
             {
-                return true;
+                Console.Write(node.Key + " ");
+                preOrder(node.Left);
+                preOrder(node.Right);
             }
-
-            return SearchNode(input,
-                input.CompareTo(current.Data) < 0
-                    ? current.Left
-                    : current.Right);
-        }
-
-        private BTreeNode<T> FindWithParent(T input, out BTreeNode<T> parent)
-        {
-            var current = Head;
-            parent = null;
-
-            while (current != null)
-            {
-                var compare = current.Data.CompareTo(input);
-
-                switch (compare)
-                {
-                    case > 0:
-                        parent = current;
-                        current = current.Left;
-                        break;
-                    case < 0:
-                        parent = current;
-                        current = current.Right;
-                        break;
-                    default:
-                        return current;
-                }
-            }
-
-            return null;
-        }
-
-
-        public void PrefixTraverse(BTreeNode<T> node, Action<BTreeNode<T>> action)
-        {
-            if (node == null) return;
-            action(node);
-            PrefixTraverse(node.Left, action);
-            PrefixTraverse(node.Right, action);
-        }
-
-        public void InfixTraverse(BTreeNode<T> node, Action<BTreeNode<T>> action)
-        {
-            if (node == null) return;
-            InfixTraverse(node.Left, action);
-            action(node);
-            InfixTraverse(node.Right, action);
-        }
-
-        public void PostfixTraverse(BTreeNode<T> node, Action<BTreeNode<T>> action)
-        {
-            if (node == null) return;
-            PostfixTraverse(node.Left, action);
-            PostfixTraverse(node.Right, action);
-            action(node);
         }
 
         public void PrintTree()
         {
-            TreeDrawer<T>.PrintNode(Head, "");
+            TreeDrawer<int>.PrintNode(root, "");
         }
     }
 }
