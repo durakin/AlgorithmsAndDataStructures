@@ -9,13 +9,17 @@ namespace Lab4
         private const string Vertical = " │ ";
         private const string Space = "   ";
 
-        public static void PrintNode(Node node, string indent)
+        public static void PrintNode(BTreeNode<T> bTreeNode, string indent)
         {
-            Console.WriteLine(node.Key);
-            if (node.Left != null) PrintChildNode(node.Left, indent, node.Right == null);
-            if (node.Right != null) PrintChildNode(node.Right, indent, true);
+            if (bTreeNode == null)
+            {
+                return;
+            }
+            Console.WriteLine(bTreeNode.Data);
+            if (bTreeNode.Left != null) PrintChildNode(bTreeNode.Left, indent, bTreeNode.Right == null);
+            if (bTreeNode.Right != null) PrintChildNode(bTreeNode.Right, indent, true);
 
-            static void PrintChildNode(Node node, string indent, bool isLast)
+            static void PrintChildNode(BTreeNode<T> node, string indent, bool isLast)
             {
                 Console.Write(indent);
 

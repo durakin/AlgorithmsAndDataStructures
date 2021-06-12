@@ -6,7 +6,7 @@ namespace Lab4
     {
         static void Main(string[] args)
         {
-            BTree bTree = new();
+            BTree<int> bTree = new();
  
             bTree.Insert(9); 
             bTree.Insert(5); 
@@ -40,6 +40,14 @@ namespace Lab4
            bTree.Remove(1);
            bTree.Remove(2);
            bTree.Remove(10);
+           bTree.Remove(5);
+           bTree.Remove(11);
+           bTree.Remove(0);
+           bTree.Remove(6);
+           bTree.Remove(-1);
+           bTree.Remove(-10);
+           bTree.Remove(9);
+
             //bTree.Remove(5);
  
             //Console.WriteLine("PreOrder Traversal After Removing Operation:");

@@ -2,14 +2,15 @@
 
 namespace Lab4
 {
-    public class Node 
-    { 
-        public int Key, Height; 
-        public Node Left, Right; 
+    public class BTreeNode <T> where T : IComparable
+    {
+        public int Height; 
+        public T Data { get; set; }
+        internal BTreeNode <T> Left, Right; 
   
-        public Node(int d) 
-        { 
-            Key = d; 
+        public BTreeNode(T data) 
+        {
+            Data = data;
             Height = 1; 
         } 
     }
