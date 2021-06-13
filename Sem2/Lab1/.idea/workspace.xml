@@ -1,26 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d9fd6859-d36c-44aa-93ef-9e2410537ec0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Lab1/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Lab1/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Lab1/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Lab1/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ACS/Ant.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ACS/Parameters.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ACS/Solver.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/Edge.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/Graph.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Graph/Vertex.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Helper/Helper.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Helper/RandomGenerator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lab1.csproj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Lab1.sln" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Program.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab6/Report/Graph.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab6/Report/report.docx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Lab6/Report/report.pdf" beforeDir="false" />
-    </list>
+    <list default="true" id="d9fd6859-d36c-44aa-93ef-9e2410537ec0" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -77,6 +58,7 @@
       <option name="presentableId" value="Default" />
       <updated>1623562361117</updated>
       <workItem from="1623562367259" duration="11737000" />
+      <workItem from="1623583517904" duration="34000" />
     </task>
     <servers />
   </component>
